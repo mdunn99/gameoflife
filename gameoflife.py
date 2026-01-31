@@ -3,6 +3,8 @@ from termcolor import colored
 import numpy as np
 import pylab as plt
 import logging
+
+'''
 logger = logging.getLogger(__name__)
 
 logging.basicConfig(
@@ -11,6 +13,7 @@ logging.basicConfig(
     format='%(asctime)s:%(levelname)s:%(message)s'
 )
 logger.info('Started')
+'''
 
 im = None
 plt.grid()
@@ -24,8 +27,8 @@ t_0 = np.array([[0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0],
                     [0,0,0,0,0,0,0,0]])
-#t_0.extend()
-logger.info(f'Initialize t_0 with length of {len(t_0)}: {t_0[0:1]}...')
+
+# logger.info(f'Initialize t_0 with length of {len(t_0)}: {t_0[0:1]}...')
 
 def count_live_cells(row, column):
     # get around python negative indices
@@ -77,22 +80,22 @@ while True:
     for _ in range(len(t_0)): # iterate this loop for the length of initial matrix (rows)
         generation += 1
         print(f'Generation(s): {generation}')
-        logger.info(f'Generation: {generation}')
+        # logger.info(f'Generation: {generation}')
 
         # initialize "t new" as a matrix of 0s
         t_n = np.array([[0 for i in range(len(t_0))] for i in range(len(t_0))])
-        logger.info(f"Initialize t_n with length of {len(t_n)}: {t_n[0:1]}")
+        # logger.info(f"Initialize t_n with length of {len(t_n)}: {t_n[0:1]}")
 
         if not im:
             # generate plot first time
             im = plt.imshow(get_data(), cmap = 'grey', interpolation='none')
-            #plt.figtext(0.2, 0.01, f'Generation(s): {generation}', wrap=True, horizontalalignment='center')
+            # plt.figtext(0.2, 0.01, f'Generation(s): {generation}', wrap=True, horizontalalignment='center')
         else:
             im.set_data(get_data())
         plt.draw()
         plt.pause(0.1)
         print(*t_n,sep='\n')
-        logger.debug(f"t_0: {t_0}")
+        # logger.debug(f"t_0: {t_0}")
         t_0 = t_n
-        logger.info(f"t_0: {t_0}")
+        # logger.info(f"t_0: {t_0}")
         print('\n')

@@ -1,5 +1,4 @@
 from time import sleep
-from termcolor import colored
 import numpy as np
 import pylab as plt
 import logging

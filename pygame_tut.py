@@ -9,7 +9,7 @@ pygame.init()
 # set color of live cell
 color = (255,255,255)
 
-array = np.ones((16, 16), dtype=int) # placeholder for real array
+array = np.zeros((16, 16), dtype=int) # placeholder for real array
 
 array_width_height = math.sqrt(array.size)
 
@@ -25,33 +25,30 @@ pygame.display.set_caption("Game of Life")
 # Game loop
 running = True
 while running:
-    sleep(1)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # because the screen is resizable, we want to continuously get the
-    # sizes so that we can fill the screen properly
-    screen_width, screen_height = screen.get_size()
-
+    # draw the grid
+    for row_i, row in enumerate(array):
+        for cell_i, cell in enumerate(row):
+            pygame.draw.rect(screen, (255,255,255),
+                             pygame.Rect(cell_i*cell_width,row_i*cell_height,1,cell_height))
+            pygame.draw.rect(screen, (255,255,255),
+                             pygame.Rect(cell_i*cell_width,row_i*cell_height,cell_width,1))
+            pygame.display.flip()
     # draw the array
     for row_i, row in enumerate(array):
         for cell_i, cell in enumerate(row):
-            #print(f"cell: {cell} at position {row_i, cell_i}")
+            # if the cell is active, draw it as such!
             if cell == 1:
+                # making the size of the cells "*0.99" makes the cells slightly smaller than the
+                # proper size of the whole cell, allowing the grid lines to be visible
                 pygame.draw.rect(screen, color,
-                                pygame.Rect(cell_i*cell_width,row_i*cell_height,cell_width,cell_height))
-                
-            '''if i % (square_width*2) == 0:
-
-                print(f"drew rectangle at position {i}")
-            else:
-                continue'''
+                                pygame.Rect(cell_i*cell_width,row_i*cell_height,cell_width*0.99,cell_height*0.99))
             pygame.display.flip()
-            sleep(0.01)
+            sleep(0.005)
 
-    sleep(1)
-    screen.fill((0,0,0))
     pygame.display.flip()
 # Quit Pygame
 pygame.quit()

@@ -18,11 +18,9 @@ arr_size = arr_width, arr_height = array_width_height, array_width_height
 screen_size = screen_width, screen_height = 512, 512
 cell_size = cell_width, cell_height = screen_width/arr_width, screen_height/arr_height
 
-
 # Set up the game window
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game of Life")
-
 
 # Game loop
 running = True
@@ -50,7 +48,7 @@ while running:
             else:
                 continue'''
             pygame.display.flip()
-            sleep(0.005)
+            sleep(0.01)
 
     sleep(1)
     screen.fill((0,0,0))

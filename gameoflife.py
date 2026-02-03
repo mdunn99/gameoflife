@@ -92,7 +92,7 @@ while True:
         else:
             im.set_data(get_data())
         plt.draw()
-        plt.pause(0.1)
+        plt.pause(1)
         print(*t_n,sep='\n')
         # logger.debug(f"t_0: {t_0}")
         t_0 = t_n

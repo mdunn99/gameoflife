@@ -13,17 +13,17 @@ black = (0, 0, 0)
 red = (255,0,0)
 
 array_0 = np.zeros((16, 16), dtype=int) # initialize empty array for initial array
-array_n = np.zeros((16, 16), dtype=int) # initialize empty array for array_n
 
+# counts the live cells surrounding a cell
 def count_live_cells(row, column):
     # get around python negative indices
     # if the row value is the minimum or maximum, 
     # assume that the outer cells are dead
     live_cells = 0
     try:
-        live_cells += array_0[row-1][column] if row != 0 else 0             # up
-        live_cells += array_0[row-1][column+1] if row != 0 else 0           # up right
-        live_cells += array_0[row][column+1] # will get caught by error     # right
+        live_cells += array_0[row-1][column] if row != 0 else 0                 # up
+        live_cells += array_0[row-1][column+1] if row != 0 else 0               # up right
+        live_cells += array_0[row][column+1] # will get caught by error         # right
         live_cells += array_0[row+1][column+1] if row != len(array_0)-1 else 0  # down right
         live_cells += array_0[row+1][column] if row != len(array_0)-1 else 0    # down
         live_cells += array_0[row+1][column-1] if row != len(array_0)-1 else 0  # down left
@@ -54,10 +54,11 @@ def determine_new_cell_status(row, column, cell):
     return cell_status
 
 def simulation_loop():
+    array_n = np.zeros((16, 16), dtype=int) # re-initialize array_n as empty every time simulation is run
     for row_index, row in enumerate(array_0):
         for column_index, cell_0 in enumerate(row):
-            cell_n = determine_new_cell_status(row_index, column_index, cell_0) # define a new cell for the matrix of the next generation
-            array_n[row_index][column_index] = cell_n # append this new cell to its corresponding location in the new matrix
+            cell_n = determine_new_cell_status(row_index, column_index, cell_0) # define a new cell for the array of the next generation
+            array_n[row_index][column_index] = cell_n # append this new cell to its corresponding location in the new array (array_n)
     return array_n
 
 # superimposing the array onto the screen
@@ -106,10 +107,10 @@ while running:
             if event.button == 1: # left-click
                 pos = pygame.mouse.get_pos()
                 update_array(pos)
-        elif event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
             if event.key == K_SPACE:
                 print("starting simulation")
-                array_0 = simulation_loop()
+                array_0 = simulation_loop() # define the initial, main array as the new array returned by the processing of the rules
 
     # draw the grid
     for row_i, row in enumerate(array_0):

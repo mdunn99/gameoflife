@@ -7,28 +7,36 @@ from time import sleep
 # Initialize Pygame
 pygame.init()
 
-# set color of live cell
+# set some RGB colors
 white = (255,255,255)
 black = (0, 0, 0)
 red = (255,0,0)
 
-# defining the size of an array and initializing that array
-array_size = array_width, array_height = (16, 16)
+array_width, array_height = (16, 16) # configure the size of an array
+screen_width, screen_height = 720, 720 # configure the size of the screen
 array_0 = np.zeros((array_width, array_height), dtype=int) # initialize empty array for initial array
 
 # superimposing the array onto the screen
-array_width_height = math.sqrt(array_0.size) #????
-arr_size = arr_width, arr_height = array_width_height, array_width_height
-screen_size = screen_width, screen_height = 720, 720
-cell_size = cell_width, cell_height = screen_width/arr_width, screen_height/arr_height
-buffer_px = 2 # there needs to be an appropriate formula for this
+cell_width, cell_height = screen_width/array_width, screen_height/array_height
 
-# calculate real array position based on pixel pos
-# we use floor division to divide the pixel pos by the width/height (same) of the cell
+# in order for the cells not to cover the grid lines, they must be smaller
+# than the full size of a cell on the superimposed array.
+# so, cells are multipled by a value 0<x<1.
+
+# however, they will still be painted in "the top left" of the position
+# of the cell at array[n][n].
+
+# buffer_px defines a "buffer" where the position of the cell,
+# to be painted on the pygame display, is added to said buffer
+# to attempt to center the cell.
+buffer_px = 2
+
+# calculate real array position based on pixel position.
+#  use floor division to divide the pixel position by the width/height of the cell.
 def get_array_index(pos):
-    row = int(pos[1] // cell_width)
+    row = int(pos[1] // cell_height)
     cell = int(pos[0] // cell_width)
-    array_index = (row, cell) # placeholder
+    array_index = (row, cell)
     return array_index
 
 # update array value associated with position clicked

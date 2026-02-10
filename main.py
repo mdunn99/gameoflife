@@ -27,8 +27,8 @@ def count_live_cells(row, column):
         live_cells += array_0[row+1][column+1] if row != len(array_0)-1 else 0  # down right
         live_cells += array_0[row+1][column] if row != len(array_0)-1 else 0    # down
         live_cells += array_0[row+1][column-1] if row != len(array_0)-1 else 0  # down left
-        live_cells += array_0[row][column-1] # will get caught by error     # left
-        live_cells += array_0[row-1][column-1]                              # up left
+        live_cells += array_0[row][column-1] # will get caught by error         # left
+        live_cells += array_0[row-1][column-1]                                  # up left
     except (ValueError,IndexError):
         pass # do not append
     return live_cells

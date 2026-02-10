@@ -1,6 +1,8 @@
 # Game of Life: Python Recreation (Work In Progress!)
 This Python program leverages the `pygame` and `numpy` libraries to build an interactive array which then follows a set of rules established in [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules) once triggered (with a space bar) to "self-replicate."
 
+![](./assets/pygame_showcase.gif)
+
 Currently, the program:
 1. Does not automatically loop once it's event is triggered. It must be manually triggered each time.
 2. Has an inefficient/confusing array handling (returning them from functions and such).

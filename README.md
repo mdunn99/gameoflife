@@ -1,5 +1,13 @@
-# Game of Life: Python Recreation
+# Game of Life: Python Recreation (Work In Progress!)
 This Python program leverages the `pygame` and `numpy` libraries to build an interactive array which then follows a set of rules established in [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life#Rules) once triggered (with a space bar) to "self-replicate."
+
+Currently, the program:
+1. Does not automatically loop once it's event is triggered. It must be manually triggered each time.
+2. Has an inefficient/confusing array handling (returning them from functions and such).
+3. Does not have a way to zoom in, zoom out, observe number of generations, or speed up/slow down the simulation.
+4. Has very messy comments.
+
+With due time, these will be rectified! I hope you enjoy seeing my process working on this.
 # Use
 1. Clone this repository.
 2. Install the dependencies listed in `requirements.txt`

@@ -9,7 +9,11 @@ Currently, the program:
 3. Has very messy comments.
 
 With due time, these will be rectified! I hope you enjoy seeing my process working on this.
+
 # Use
 1. Clone this repository.
 2. Install the dependencies listed in `requirements.txt`
 3. `python main.py` or `python3 main.py`
+
+# Future Ideas
+1. Build it on my website using `pygbag`.

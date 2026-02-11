@@ -156,7 +156,7 @@ while running:
         array_n = return_new_array(array_0)
         array_0 = array_n
         #draw_array(array_0)
-        sleep(0.5)
+        sleep(0.1)
     draw_array(array_0)
  
 # Quit Pygame

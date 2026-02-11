@@ -11,12 +11,14 @@ white = (255,255,255)
 black = (0, 0, 0)
 red = (255,0,0)
 
-array_width, array_height = (16,16) # configure the size of an array
+array_width, array_height = 16, 16 # configure the size of an array
 screen_width, screen_height = 720, 720 # configure the size of the screen
+ratio_of_screen_to_area = 2 # how much smaller should the area of the array be in relation to the screen?
+area_width, area_height = screen_width/ratio_of_screen_to_area, screen_height/ratio_of_screen_to_area # define an area where the array will be imposed
 array_0 = np.zeros((array_width, array_height), dtype=int) # initialize initial array as empty
 
-# superimposing the array onto the screen
-cell_width, cell_height = screen_width/array_width, screen_height/array_height
+# superimposing the array onto the area
+cell_width, cell_height = area_width/array_width, area_height/array_height
 
 # in order for the cells not to cover the grid lines, they must be smaller
 # than the full size of a cell on the superimposed array.
@@ -32,17 +34,20 @@ buffer_px = 2
 
 # calculate real array position based on pixel position.
 #  use floor division to divide the pixel position by the width/height of the cell.
-def get_array_indices(pos):
-    row = int(pos[1] // cell_height)
-    cell = int(pos[0] // cell_width)
+def get_array_indices():
+    screen_position_y, screen_position_x = pygame.mouse.get_pos() # returns as height, width
+    pos_on_grid = screen_position_y-area_height/ratio_of_screen_to_area, screen_position_x-area_width/ratio_of_screen_to_area
+    row = int(pos_on_grid[1] // cell_height)
+    cell = int(pos_on_grid[0] // cell_width)
     array_index = (row, cell)
-    return array_index
+    return array_index, pos_on_grid
 
 # update array value associated with position clicked
-def update_array_from_user_input(array_to_update, pos):
+def update_array_from_user_input(array_to_update):
     array = np.copy(array_to_update)
+    array_index, pos = get_array_indices()
     print(f"\nmouse clicked at position: {pos}")
-    array_index = get_array_indices(pos)
+
     row = array_index[0]
     cell = array_index[1]
     print(f"cell at pos {pos} detected as row {row}, cell {cell} with value: {array_to_update[row][cell]}")
@@ -57,28 +62,46 @@ def update_array_from_user_input(array_to_update, pos):
 
 def draw_grid(array):
     for row_i, row in enumerate(array):
-        for cell_i, cell in enumerate(row):
+        for cell_i, _ in enumerate(row):
+
+            pos_x = cell_i*cell_width # the nth cell in the array times the width (in pixels) is the horizontal position of the grid line
+            pos_x = pos_x+area_width/ratio_of_screen_to_area # center the drawn array (idk how this works)
+
+            pos_y = row_i*cell_height # the nth cell in the array times the height (in pixels) is the vertical position of the grid line
+            pos_y = pos_y+area_height/ratio_of_screen_to_area
+
+            # draw the upper vertical grid
             pygame.draw.rect(screen, (255,255,255),
-                             pygame.Rect(cell_i*cell_width,row_i*cell_height,1,cell_height))
+                            pygame.Rect(pos_x,pos_y,1,cell_height)) # horiz. pos. in pixels,vert. pos. in pixels,thin width,height (vertical line)
+            # draw the horizontal grid
             pygame.draw.rect(screen, (255,255,255),
-                             pygame.Rect(cell_i*cell_width,row_i*cell_height,cell_width,1))
-    return pygame.display.flip()
+                            pygame.Rect(pos_x,pos_y,cell_width,1)) # horiz. pos. in pixels,vert. pos. in pixels,width,thin height (horizontal line)
+    return #pygame.display.flip()
 
 def draw_array(array):
     for row_i, row in enumerate(array):
         for cell_i, cell in enumerate(row):
+            
+            pos_x = cell_i*cell_width
+            #pos_x = pos_x+area_width/ratio_of_screen_to_area
+
+            pos_y = row_i*cell_height
+            #pos_y = pos_y+area_height/ratio_of_screen_to_area
+
             # if the cell is active, draw it as such!
             if cell == 1:
                 # making the size of the cells "*0.90" makes the cells slightly smaller than the
                 # size of the whole cell, allowing the grid lines to be visible.
                 # we have to adjust the position accordingly, so we add a buffer buffer_px to each coordinate for the cells
+
                 pygame.draw.rect(screen, white,
-                                pygame.Rect((cell_i*cell_width)+buffer_px,(row_i*cell_height)+buffer_px,cell_width*0.90,cell_height*0.90))
+                                pygame.Rect(pos_x+buffer_px,pos_y+buffer_px,cell_width*0.90,cell_height*0.90))
 
             else:
                 pygame.draw.rect(screen, black,
-                                pygame.Rect((cell_i*cell_width)+buffer_px,(row_i*cell_height)+buffer_px,cell_width*0.90,cell_height*0.90))
-    return pygame.display.flip()
+                                pygame.Rect(pos_x+buffer_px,pos_y+buffer_px,cell_width*0.90,cell_height*0.90))
+
+    return #pygame.display.flip()
 
 # counts the live cells surrounding a cell
 def count_live_cells(row, column):
@@ -136,6 +159,7 @@ draw_grid(array_0) # draw the grid based on the size of the initial array
 
 running = True
 simulating = False
+generations = 0
 
 # Game loop
 while running:
@@ -144,8 +168,7 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1: # left-click
-                pos = pygame.mouse.get_pos()
-                array_n = update_array_from_user_input(array_0, pos)
+                array_n = update_array_from_user_input(array_0)
                 array_0 = array_n
                 #draw_array(array_0)
         if event.type == pygame.KEYDOWN:
@@ -153,11 +176,17 @@ while running:
                 simulating = not simulating
                 print("simulation", simulating)
     if simulating:
+        print("generation:", generations)
         array_n = return_new_array(array_0)
         array_0 = array_n
         #draw_array(array_0)
         sleep(0.1)
+        generations += 1
+    if not simulating:
+        generations = 0
     draw_array(array_0)
+    pygame.display.flip()
+    clock.tick(60)
  
 # Quit Pygame
 pygame.quit()

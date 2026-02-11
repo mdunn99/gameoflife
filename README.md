@@ -17,3 +17,5 @@ With due time, these will be rectified! I hope you enjoy seeing my process worki
 
 # Future Ideas
 1. Build it on my website using `pygbag`.
+2. Allow for "dragging" pointer across cells
+3. Add a config file

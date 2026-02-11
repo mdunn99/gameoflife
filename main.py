@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-import math
 import numpy as np
 from time import sleep
 
@@ -14,7 +13,7 @@ red = (255,0,0)
 
 array_width, array_height = (16, 16) # configure the size of an array
 screen_width, screen_height = 720, 720 # configure the size of the screen
-array_0 = np.zeros((array_width, array_height), dtype=int) # initialize empty array for initial array
+array_0 = np.zeros((array_width, array_height), dtype=int) # initialize initial array as empty
 
 # superimposing the array onto the screen
 cell_width, cell_height = screen_width/array_width, screen_height/array_height
@@ -33,28 +32,28 @@ buffer_px = 2
 
 # calculate real array position based on pixel position.
 #  use floor division to divide the pixel position by the width/height of the cell.
-def get_array_index(pos):
+def get_array_indices(pos):
     row = int(pos[1] // cell_height)
     cell = int(pos[0] // cell_width)
     array_index = (row, cell)
     return array_index
 
 # update array value associated with position clicked
-def update_array(pos):
+def update_array_from_user_input(array_to_update, pos):
+    array = np.copy(array_to_update)
     print(f"\nmouse clicked at position: {pos}")
-    array_index = get_array_index(pos)
+    array_index = get_array_indices(pos)
     row = array_index[0]
     cell = array_index[1]
-    print(f"cell at pos {pos} detected as row {row}, cell {cell} with value: {array_0[row][cell]}")
+    print(f"cell at pos {pos} detected as row {row}, cell {cell} with value: {array_to_update[row][cell]}")
     # if cell is off, turn it on
     # vice versa
-    # THIS FUNCTIONALITY WILL HAVE TO BE EDITED WHEN THE SIMULATION ACTUALLY BEGINS
-    if array_0[row][cell] == 0:
-        array_0[row][cell] = 1
+    if array_to_update[row][cell] == 0:
+        array[row][cell] = 1
     else:
-        array_0[row][cell] = 0
-    print(f"cell {cell} at row {row} is now: {array_0[row][cell]}")
-    return
+        array[row][cell] = 0
+    print(f"cell {cell} at row {row} is now: {array[row][cell]}")
+    return array
 
 def draw_grid(array):
     for row_i, row in enumerate(array):
@@ -63,7 +62,7 @@ def draw_grid(array):
                              pygame.Rect(cell_i*cell_width,row_i*cell_height,1,cell_height))
             pygame.draw.rect(screen, (255,255,255),
                              pygame.Rect(cell_i*cell_width,row_i*cell_height,cell_width,1))
-    return
+    return pygame.display.flip()
 
 def draw_array(array):
     for row_i, row in enumerate(array):
@@ -75,10 +74,11 @@ def draw_array(array):
                 # we have to adjust the position accordingly, so we add a buffer buffer_px to each coordinate for the cells
                 pygame.draw.rect(screen, white,
                                 pygame.Rect((cell_i*cell_width)+buffer_px,(row_i*cell_height)+buffer_px,cell_width*0.90,cell_height*0.90))
+
             else:
                 pygame.draw.rect(screen, black,
                                 pygame.Rect((cell_i*cell_width)+buffer_px,(row_i*cell_height)+buffer_px,cell_width*0.90,cell_height*0.90))
-    return
+    return pygame.display.flip()
 
 # counts the live cells surrounding a cell
 def count_live_cells(row, column):
@@ -119,9 +119,9 @@ def determine_new_cell_status(row, column, cell):
     #print(live_cell_count)
     return cell_status
 
-def simulation_loop():
+def simulation_loop(array):
     array_n = np.zeros((array_width, array_height), dtype=int) # re-initialize array_n as empty every time simulation is run
-    for row_index, row in enumerate(array_0):
+    for row_index, row in enumerate(array):
         for column_index, cell_0 in enumerate(row):
             cell_n = determine_new_cell_status(row_index, column_index, cell_0) # define a new cell for the array of the next generation
             array_n[row_index][column_index] = cell_n # append this new cell to its corresponding location in the new array (array_n)
@@ -130,6 +130,8 @@ def simulation_loop():
 # Set up the game window
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game of Life")
+# draw the grid based on the size of the initial array
+draw_grid(array_0)
 
 # Game loop
 running = True
@@ -137,21 +139,29 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1: # left-click
                 pos = pygame.mouse.get_pos()
-                update_array(pos)
+                array_n = update_array_from_user_input(array_0, pos)
+                array_0 = array_n
+                draw_array(array_0)
         if event.type == pygame.KEYDOWN:
             if event.key == K_SPACE:
+                simulating = True
                 print("starting simulation")
-                array_0 = simulation_loop() # define the initial, main array as the new array returned by the processing of the rules
+                while simulating:
+                    for event in pygame.event.get():
+                        if event.type == pygame.KEYDOWN:
+                            if event.key == K_SPACE:
+                                simulating = False
+                    array_n = simulation_loop(array_0)
+                    array_0 = array_n
+                    draw_array(array_0)
+                    sleep(0.1)
 
-    # draw the grid
-    draw_grid(array_0)
 
     # draw the array
-    draw_array(array_0)
+    #draw_array(array_n or array_0)
 
-    pygame.display.flip()
 # Quit Pygame
 pygame.quit()

@@ -4,10 +4,9 @@ This Python program leverages the `pygame` and `numpy` libraries to build an int
 ![](./assets/pygame_showcase.gif)
 
 Currently, the program:
-1. Does not automatically loop once it's event is triggered. It must be manually triggered each time.
-2. Has an inefficient/confusing array handling (returning them from functions and such).
-3. Does not have a way to zoom in, zoom out, observe number of generations, or speed up/slow down the simulation.
-4. Has very messy comments.
+1. Has an inefficient/confusing array handling (returning them from functions and such).
+2. Does not have a way to zoom in, zoom out, observe number of generations, or speed up/slow down the simulation.
+3. Has very messy comments.
 
 With due time, these will be rectified! I hope you enjoy seeing my process working on this.
 # Use

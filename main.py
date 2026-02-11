@@ -11,7 +11,7 @@ white = (255,255,255)
 black = (0, 0, 0)
 red = (255,0,0)
 
-array_width, array_height = (16, 16) # configure the size of an array
+array_width, array_height = (16,16) # configure the size of an array
 screen_width, screen_height = 720, 720 # configure the size of the screen
 array_0 = np.zeros((array_width, array_height), dtype=int) # initialize initial array as empty
 
@@ -119,7 +119,7 @@ def determine_new_cell_status(row, column, cell):
     #print(live_cell_count)
     return cell_status
 
-def simulation_loop(array):
+def return_new_array(array):
     array_n = np.zeros((array_width, array_height), dtype=int) # re-initialize array_n as empty every time simulation is run
     for row_index, row in enumerate(array):
         for column_index, cell_0 in enumerate(row):
@@ -130,11 +130,14 @@ def simulation_loop(array):
 # Set up the game window
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Game of Life")
-# draw the grid based on the size of the initial array
-draw_grid(array_0)
+clock = pygame.time.Clock()
+
+draw_grid(array_0) # draw the grid based on the size of the initial array
+
+running = True
+simulating = False
 
 # Game loop
-running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -144,24 +147,17 @@ while running:
                 pos = pygame.mouse.get_pos()
                 array_n = update_array_from_user_input(array_0, pos)
                 array_0 = array_n
-                draw_array(array_0)
+                #draw_array(array_0)
         if event.type == pygame.KEYDOWN:
             if event.key == K_SPACE:
-                simulating = True
-                print("starting simulation")
-                while simulating:
-                    for event in pygame.event.get():
-                        if event.type == pygame.KEYDOWN:
-                            if event.key == K_SPACE:
-                                simulating = False
-                    array_n = simulation_loop(array_0)
-                    array_0 = array_n
-                    draw_array(array_0)
-                    sleep(0.1)
-
-
-    # draw the array
-    #draw_array(array_n or array_0)
-
+                simulating = not simulating
+                print("simulation", simulating)
+    if simulating:
+        array_n = return_new_array(array_0)
+        array_0 = array_n
+        #draw_array(array_0)
+        sleep(0.5)
+    draw_array(array_0)
+ 
 # Quit Pygame
 pygame.quit()

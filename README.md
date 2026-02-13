@@ -3,12 +3,6 @@ This Python program leverages the `pygame` and `numpy` libraries to build an int
 
 ![](./assets/gameoflife.gif)
 
-Currently, the program:
-1. Has an inefficient/confusing array handling (returning them from functions and such).
-2. Does not have a way to zoom in, zoom out, observe number of generations, or speed up/slow down the simulation.
-3. Has very messy comments.
-
-With due time, these will be rectified! I hope you enjoy seeing my process working on this.
 
 # Use
 1. Clone this repository.
@@ -19,3 +13,4 @@ With due time, these will be rectified! I hope you enjoy seeing my process worki
 1. Build it on my website using `pygbag`.
 2. Allow for "dragging" pointer across cells
 3. Add a config file
+4. Add have a way to zoom in, zoom out, observe number of generations, or speed up/slow down the simulation.
